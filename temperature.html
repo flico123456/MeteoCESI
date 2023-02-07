@@ -1,0 +1,100 @@
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style_main.css">
+</head>
+
+
+<body>
+
+  <nav>
+    <img src="img/logo.png">
+    <div class="onglets">
+      <a href="index.html">Accueil</a>
+      <a href="temperature.html">Températures</a>
+      <a href="graphique.html">Graphique</a>
+    </div>
+  </nav>
+  
+
+
+  <body onload="initialize()">
+    <div class="style-page-temp">
+
+      <!--Function pour l'heure actuelle-->
+      
+      <div style="text-align: center; margin-top: 10px; font-size: large;" id="div_horloge"></div>
+   
+      <script type="text/javascript">
+        window.onload=function() {
+        horloge('div_horloge');
+      };
+  
+      function horloge(el) {
+        if(typeof el=="string") { el = document.getElementById(el); }
+          function actualiser() {
+            var date = new Date();
+            var str = date.getHours();
+            str += ':'+(date.getMinutes()<10?'0':'')+date.getMinutes();
+            str += ':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
+            el.innerHTML = `Heure actuelle : ${str}`;
+         }
+            actualiser();
+            setInterval(actualiser,1000);
+          }
+      </script>
+
+
+      <!--Function pour avoir tout les derniers relevés-->
+
+      <h6 style="text-align: center; margin-top: 10px; font-size: large;" id="LastTemparature"></h6>
+      <h6 style="text-align: center; margin-top: 10px; font-size: large;" id="LastHumidite"></h6>
+      <h6 style="text-align: center; margin-top: 10px; font-size: large;" id="Pression"></h6>
+      <h6 style="text-align: center; margin-top: 10px; font-size: large;" id="Altidude"></h6>
+
+      <script type="text/javascript">
+
+        function Informations() {
+        fetch('API/api_temp_last.php')
+        .then(res => res.json())
+        .then(data => {
+          data.forEach(element => {
+            LastTemparature.textContent = `Température:    ${element.temperature} °C`;
+            LastHumidite.textContent = `Humidité:    ${element.humidite} %`;
+            Pression.textContent = `Pression:    ${element.pression} hPa`;
+            Altidude.textContent = `Altitude:    ${element.altitude} m`
+          });
+       });
+        }
+        Informations();
+        setInterval(Informations, 1000);
+    </script>
+    </div>
+  
+
+  </body>
+
+
+
+</body>
+
+</html>
